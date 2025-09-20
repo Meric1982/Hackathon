@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TextileCycle - Tekstil Atığının Döngüsel Çözümü</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #2d5a87 0%, #4a90a4 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .logo::before {
+            content: "♻";
+            margin-right: 10px;
+            font-size: 2.2rem;
+            color: #7dd3c0;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: #7dd3c0;
+        }
+
+        /* Auth Buttons */
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .auth-btn {
+            padding: 8px 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            border: 2px solid white;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .auth-btn:hover {
+            background: white;
+            color: #2d5a87;
+            transform: translateY(-1px);
+        }
+
+        .auth-btn.signup {
+            background: #7dd3c0;
+            border-color: #7dd3c0;
+            color: white;
+        }
+
+        .auth-btn.signup:hover {
+            background: white;
+            color: #7dd3c0;
+            border-color: white;
+        }
+
+        .donate-btn {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            color: white;
+        }
+
+        .donate-btn:hover {
+            background: white;
+            color: #ff6b6b;
+            border-color: white;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            margin-left: 0.5rem;
+        }
+
+        .language-selector select {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 8px 12px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            min-width: 100px;
+        }
+
+        .language-selector select:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .language-selector select option {
+            background: #2d5a87;
+            color: white;
+            padding: 8px;
+            font-weight: normal;
+            font-family: inherit;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 2rem;
+            height: 2rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .hamburger span {
+            width: 2rem;
+            height: 0.25rem;
+            background: white;
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 140px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.05)" points="0,1000 1000,0 1000,1000"/></svg>') no-repeat;
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #7dd3c0;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+            animation: fadeInUp 1s ease 0.4s both;
+            border: none;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .cta-button:hover {
+            background: #5ec2a8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(125, 211, 192, 0.3);
+        }
+
+        .cta-button.donate {
+            background: #ff6b6b;
+        }
+
+        .cta-button.donate:hover {
+            background: #ee5a52;
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: #f8f9fa;
+            padding: 80px 0;
+            min-height: 400px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 0 auto;
+            max-width: 1000px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            color: #2d5a87;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* About Section */
+        .about {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .about-card {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .about-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .about-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-card h3 {
+            color: #2d5a87;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Problem Section */
+        .problem {
+            padding: 80px 0;
+            background: white;
+            min-height: 600px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2d5a87;
+            font-weight: bold;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .problem-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .problem-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Solution Section */
+        .solution {
+            background: linear-gradient(135deg, #7dd3c0, #5ec2a8);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .solution-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: white;
+            color: #2d5a87;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        /* Team Section */
+        .team {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+
+        .member-avatar {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-member h4 {
+            color: #2d5a87;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: #7dd3c0;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Partners Section */
+        .partners {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .partner-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .partner-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .partner-logo {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .partner-card h4 {
+            color: #2d5a87;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+
+        .faq-question h3 {
+            margin: 0;
+            color: #2d5a87;
+            font-size: 1.1rem;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            color: #7dd3c0;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            margin: 0;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        /* Impact Section */
+        .impact {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .impact-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid #7dd3c0;
+        }
+
+        .impact-card h3 {
+            color: #2d5a87;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Future Goals */
+        .goals {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .goals-timeline {
+            margin-top: 3rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
+
+        .timeline-year {
+            background: #7dd3c0;
+            color: #2d5a87;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-right: 1.5rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Donation Section */
+        .donation {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .donation-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .donation-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .donation-option {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e1e5e9;
+        }
+
+        .donation-option:hover, .donation-option.selected {
+            border-color: #7dd3c0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(125, 211, 192, 0.2);
+        }
+
+        .donation-option h4 {
+            color: #2d5a87;
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-amount {
+            margin-top: 2rem;
+        }
+
+        .custom-amount input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .custom-amount input:focus {
+            outline: none;
+            border-color: #7dd3c0;
+        }
+
+        .payment-methods {
+            margin-top: 2rem;
+        }
+
+        .payment-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .payment-option {
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            flex: 1;
+        }
+
+        .payment-option:hover, .payment-option.selected {
+            border-color: #7dd3c0;
+            background: rgba(125, 211, 192, 0.1);
+        }
+
+        .donate-submit {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .donate-submit button {
+            background: #7dd3c0;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .donate-submit button:hover {
+            background: #5ec2a8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(125, 211, 192, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: #2d5a87;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .footer-content a {
+            color: #7dd3c0;
+            text-decoration: none;
+        }
+
+        .footer-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .auth-btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+            
+            .language-selector select {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+                min-width: 90px;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 70%;
+                background: linear-gradient(135deg, #2d5a87 0%, #4a90a4 100%);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in;
+                z-index: 999;
+                gap: 2rem;
+                padding: 2rem;
+            }
+            
+            .nav-links.active {
+                transform: translateX(0);
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg);
+            }
+            
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg);
+            }
+            
+            .hero {
+                padding: 120px 0 60px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .donation-container {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .cta-button {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+                margin: 5px;
+                display: block;
+                width: 80%;
+                margin: 10px auto;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                min-height: 140px;
+                padding: 1.5rem 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .problem-grid, .solution-steps, .impact-grid, .team-grid, .partners-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .timeline-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .timeline-year {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .donation-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .payment-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">TextileCycle</div>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about">Hakkımızda</a></li>
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#solution">Çözüm</a></li>
+                <li><a href="#team">Takımımız</a></li>
+                <li><a href="#partners">İş Birlikçilerimiz</a></li>
+                <li><a href="#faq">SSS</a></li>
+                <li><a href="#impact">Etki</a></li>
+                <li><a href="#goals">Hedefler</a></li>
+                <li><a href="#donation">Bağış</a></li>
+                <li><a href="#contact">İletişim</a></li>
+                <li class="auth-buttons">
+                    <a href="#" id="loginBtn" class="auth-btn">Giriş Yap</a>
+                    <a href="#" id="signupBtn" class="auth-btn signup">Üye Ol</a>
+                    <a href="#donation" class="auth-btn donate-btn">Bağış Yap</a>
+                </li>
+                <li class="language-selector">
+                    <select id="languageSelect">
+                        <option value="tr">🇹🇷 Türkçe</option>
+                        <option value="en">🇺🇸 English</option>
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="es">🇪🇸 Español</option>
+                    </select>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Tekstil Atığının Döngüsel Çözümü</h1>
+                <p>Yıllık 92 milyon ton tekstil atığını değerli kaynaklara dönüştüren akıllı teknoloji platformu</p>
+                <div>
+                    <a href="#solution" class="cta-button">Çözümümüzü Keşfet</a>
+                    <a href="#donation" class="cta-button donate">Bağış Yap</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card fade-in">
+                    <div class="stat-number">92M</div>
+                    <div class="stat-label">Ton yıllık tekstil atığı</div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">%87</div>
+                    <div class="stat-label">Geri dönüştürülmeyen oran</div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">2.6B</div>
+                    <div class="stat-label">Kişi etkileniyor</div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">%20</div>
+                    <div class="stat-label">Su kirliliğinden sorumlu</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">Hakkımızda</h2>
+            
+            <div class="about-content">
+                <div class="about-intro">
+                    <p style="text-align: center; font-size: 1.2rem; max-width: 800px; margin: 0 auto 4rem;">
+                        TextileCycle, küresel tekstil atığı krizine sürdürülebilir çözümler sunan yenilikçi bir teknoloji şirketidir. AI ve IoT teknolojilerini kullanarak döngüsel ekonomi modeline katkı sağlıyoruz.
+                    </p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="about-card fade-in">
+                        <div class="about-icon">🎯</div>
+                        <h3>Misyonumuz</h3>
+                        <p>Tekstil atıklarını değerli kaynaklara dönüştürerek sıfır atık hedefine ulaşmak ve sürdürülebilir bir gelecek inşa etmek.</p>
+                    </div>
+                    
+                    <div class="about-card fade-in">
+                        <div class="about-icon">🌟</div>
+                        <h3>Vizyonumuz</h3>
+                        <p>2030 yılına kadar dünyada tekstil geri dönüşümünde lider konuma gelerek çevre dostu teknolojilerin öncüsü olmak.</p>
+                    </div>
+                    
+                    <div class="about-card fade-in">
+                        <div class="about-icon">⚖️</div>
+                        <h3>Değerlerimiz</h3>
+                        <p>Sürdürülebilirlik, yenilikçilik, şeffaflık ve sosyal sorumluluk ilkelerini benimseyen bir şirket kültürü.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="problem" id="problem">
+        <div class="container">
+            <h2 class="section-title">Küresel Tekstil Atığı Krizi</h2>
+            <p style="text-align: center; font-size: 1.1rem; max-width: 800px; margin: 0 auto;">
+                Tekstil endüstrisi dünyada en çok kirleten ikinci endüstri. Her saniye bir kamyon dolusu tekstil atığı çöplüklere gidiyor.
+            </p>
+            
+            <div class="problem-grid">
+                <div class="problem-card fade-in">
+                    <h3>🌍 Çevresel Etki</h3>
+                    <p>Yıllık 1.2 milyar ton karbondioksit salınımı, su kaynaklarının %20'sini kirletiyor, mikroplastik kirliliği yaratıyor.</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <h3>💧 Su Krizi</h3>
+                    <p>Bir pamuklu tişört üretimi için 2.700 litre su gerekiyor. Bu miktar bir kişinin 3 yıl boyunca içeceği su miktarı.</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <h3>🏭 Kaynak İsrafı</h3>
+                    <p>Tekstil atıklarının %87'si yakılıyor veya çöplüklere gidiyor. Değerli kaynaklar boşa harcanıyor.</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <h3>⚡ Enerji Tüketimi</h3>
+                    <p>Endüstri küresel enerji tüketiminin %4'ünden sorumlu ve sera gazı emisyonlarını artırıyor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solution" id="solution">
+        <div class="container">
+            <h2 class="section-title">TextileCycle Çözümü</h2>
+            <p style="text-align: center; font-size: 1.1rem; max-width: 800px; margin: 0 auto;">
+                AI destekli akıllı toplama sistemi, otomatik sınıflandırma ve döngüsel ekonomi platformu ile tekstil atığını değerli kaynaklara dönüştürüyoruz.
+            </p>
+            
+            <div class="solution-steps">
+                <div class="step-card fade-in">
+                    <div class="step-number">1</div>
+                    <h3>Akıllı Toplama</h3>
+                    <p>IoT sensörlü akıllı konteynerler ile tekstilleri otomatik olarak topluyoruz</p>
+                </div>
+                <div class="step-card fade-in">
+                    <div class="step-number">2</div>
+                    <h3>AI Sınıflandırma</h3>
+                    <p>Yapay zeka ile tekstilleri kalite ve türüne göre otomatik sınıflandırıyoruz</p>
+                </div>
+                <div class="step-card fade-in">
+                    <div class="step-number">3</div>
+                    <h3>Geri Dönüşüm</h3>
+                    <p>Mekanik ve kimyasal yöntemlerle tekstilleri yeni hammaddeye çeviriyoruz</p>
+                </div>
+                <div class="step-card fade-in">
+                    <div class="step-number">4</div>
+                    <h3>Yeni Ürünler</h3>
+                    <p>Geri dönüştürülmüş malzemelerden sürdürülebilir tekstil ürünleri üretiyoruz</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team" id="team">
+        <div class="container">
+            <h2 class="section-title">Takımımız</h2>
+            
+            <div class="team-grid">
+                <div class="team-member fade-in">
+                    <div class="member-avatar">👩‍💼</div>
+                       <h4>Meriç Tuna Demir</h4>
+                    <p class="member-role">Kurucu & CEO</p>
+                    <p>15 yıllık tekstil sektörü deneyimi</p>
+                </div>
+                
+                <div class="team-member fade-in">
+                    <div class="member-avatar">👩‍💻</div>
+                    <h4>Samuel Jackson</h4>
+                    <p class="member-role">CTO</p>
+                    <p>AI ve IoT teknolojileri uzmanı</p>
+                </div>
+                
+                <div class="team-member fade-in">
+                    <div class="member-avatar">👨‍🔬</div>
+                    <h4>Dr. Mehmet Öz</h4>
+                    <p class="member-role">Ar-Ge Direktörü</p>
+                    <p>Malzeme bilimi ve geri dönüşüm</p>
+                </div>
+                
+                <div class="team-member fade-in">
+                    <div class="member-avatar">👩‍🌾</div>
+                    <h4>Zeynep Demir</h4>
+                    <p class="member-role">Sürdürülebilirlik Müdürü</p>
+                    <p>Çevre mühendisliği ve sürdürülebilirlik</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="partners" id="partners">
+        <div class="container">
+            <h2 class="section-title">İş Birlikçilerimiz</h2>
+            
+            <div class="partners-grid">
+                <div class="partner-card fade-in">
+                    <div class="partner-logo">🏭</div>
+                    <h4>Türk Tekstil Derneği</h4>
+                    <p>Endüstri iş birliği ve sektörel danışmanlık</p>
+                </div>
+                
+                <div class="partner-card fade-in">
+                    <div class="partner-logo">🏛️</div>
+                    <h4>Çevre Bakanlığı</h4>
+                    <p>Sürdürülebilirlik projeleri ve devlet destekleri</p>
+                </div>
+                
+                <div class="partner-card fade-in">
+                    <div class="partner-logo">🎓</div>
+                    <h4>İTÜ</h4>
+                    <p>Ar-Ge iş birliği ve teknoloji transferi</p>
+                </div>
+                
+                <div class="partner-card fade-in">
+                    <div class="partner-logo">🌍</div>
+                    <h4>Greenpeace</h4>
+                    <p>Çevre dostu uygulamalar ve farkındalık projeleri</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+            
+            <div class="faq-list">
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <h3>TextileCycle nasıl çalışır?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Akıllı konteynerlerle tekstil atıklarını topluyor, AI ile sınıflandırıyor ve ileri dönüşüm teknolojileriyle yeni ürünlere dönüştürüyoruz.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <h3>Hangi tür tekstilleri kabul ediyorsunuz?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Pamuk, polyester, yün, ipek gibi tüm doğal ve sentetik tekstil ürünlerini kabul ediyoruz. Temiz ve kuru olması yeterlidir.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <h3>Geri dönüşüm süreci ne kadar sürer?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Toplama, sınıflandırma ve dönüşüm süreci yaklaşık 2-4 hafta sürmektedir. Malzeme türüne göre bu süre değişebilir.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <h3>Nasıl iş birliği yapabiliriz?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Kurumsal iş birlikleri, belediyeler ve STK'lar için özel çözümler sunuyoruz. İletişim sayfamızdan bize ulaşabilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="impact" id="impact">
+        <div class="container">
+            <h2 class="section-title">Neden TextileCycle Önemli?</h2>
+            
+            <div class="impact-grid">
+                <div class="impact-card fade-in">
+                    <h3>🌱 Sürdürülebilir Gelecek</h3>
+                    <p>Döngüsel ekonomi modeliyle kaynak israfını %90 azaltıyoruz. Yeni nesillere temiz bir dünya bırakıyoruz.</p>
+                </div>
+                <div class="impact-card fade-in">
+                    <h3>💼 Ekonomik Değer</h3>
+                    <p>Tekstil atığından yılda 500 milyar dolar ekonomik değer yaratma potansiyeli. Yeşil işler oluşturuyoruz.</p>
+                </div>
+                <div class="impact-card fade-in">
+                    <h3>🌍 İklim Etkisi</h3>
+                    <p>Karbon ayak izini %70 azaltıyoruz. Paris İklim Anlaşması hedeflerine katkı sağlıyoruz.</p>
+                </div>
+                <div class="impact-card fade-in">
+                    <h3>🚀 Teknoloji İnnovasyon</h3>
+                    <p>Blockchain tabanlı izlenebilirlik ve AI optimizasyonu ile endüstriyel dönüşümü liderliği ediyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="goals" id="goals">
+        <div class="container">
+            <h2 class="section-title">Gelecek Hedeflerimiz</h2>
+            
+            <div class="goals-timeline">
+                <div class="timeline-item fade-in">
+                    <div class="timeline-year">2025</div>
+                    <div>
+                        <h4>Pilot Proje Başlangıcı</h4>
+                        <p>İstanbul'da 50 akıllı konteyner ile pilot uygulamaya başlayacağız</p>
+                    </div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-year">2026</div>
+                    <div>
+                        <h4>Türkiye Çapında Yaygınlaştırma</h4>
+                        <p>5 büyük şehirde 500 konteyner ile ulusal ağ kurarak aylık 1000 ton tekstil toplama</p>
+                    </div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-year">2027</div>
+                    <div>
+                        <h4>Uluslararası Ekspansiyon</h4>
+                        <p>Balkan ülkelerinde faaliyete geçerek bölgesel tekstil döngüsü lideri olmak</p>
+                    </div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-year">2030</div>
+                    <div>
+                        <h4>Sürdürülebilir Ekosistem</h4>
+                        <p>Yıllık 100.000 ton tekstil atığını döngüye kazandırarak sıfır atık hedefine ulaşmak</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3>TextileCycle</h3>
+                    <p>Sürdürülebilir tekstil döngüsünün öncüsü</p>
+                </div>
+                <div>
+                    <h4>İletişim</h4>
+                    <p>📧 <a href="mailto:info@textilecycle.com">info@textilecycle.com</a></p>
+                    <p>📱 <a href="tel:+902121234567">+90 212 123 45 67</a></p>
+                    <p>📍 İstanbul Teknopark, Türkiye</p>
+                </div>
+                <div>
+                    <h4>Sosyal Medya</h4>
+                    <p>
+                        <a href="https://linkedin.com/company/textilecycle" target="_blank" style="margin-right: 10px;">LinkedIn</a>
+                        <a href="https://twitter.com/textilecycle" target="_blank" style="margin-right: 10px;">X</a>
+                        <a href="https://instagram.com/textilecycle" target="_blank">Instagram</a>
+                    </p>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2025 TextileCycle. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger menu functionality
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // FAQ toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // Scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Auth button functionality
+        document.getElementById('loginBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Giriş sayfasına yönlendiriliyorsunuz...');
+        });
+
+        document.getElementById('signupBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Üye olma sayfasına yönlendiriliyorsunuz...');
+        });
+
+        // Counter animation for stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                const numericValue = parseFloat(target.replace(/[^0-9.]/g, ''));
+                const suffix = target.replace(/[0-9.]/g, '');
+                
+                let current = 0;
+                const increment = numericValue / 100;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= numericValue) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current) + suffix;
+                    }
+                }, 20);
+            });
+        }
+
+        // Trigger counter animation when stats section is visible
+        const statsSection = document.querySelector('.stats');
+        if (statsSection) {
+            const statsObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            statsObserver.observe(statsSection);
+        }
+    </script>
+</body>
+</html>
